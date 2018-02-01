@@ -1,6 +1,7 @@
 *.zip
 .DS_Store
-*.bak
+*.bak # backups
+*.mpf # modelsim file
 
 
 # Byte-compiled / optimized / DLL files
