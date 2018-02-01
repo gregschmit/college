@@ -1,0 +1,69 @@
+# .data and .text for g3l ISA program
+
+.data  # 0x00
+A: .tribble 5250
+B: .tribble 5235
+buffer0: .tribble 0
+R: .tribble -1
+buffer1: .tribble 0
+third_largest_value: .tribble 0b100000000000
+third_largest_index: .tribble 0b100000000000
+Array1Count: .tribble 10
+Array1: .tribble 200, -3, 15, 9, -1200, 45, 0, 6, 12, -2
+
+.text
+f_thirdlarge:
+  # get value and index of third largest value in array
+  # set r6 to array count pointer (7)
+  6set0111
+  # set bubble stack to neg infinity
+  neginf $r1
+  neginf $r2
+  neginf $r3
+  lt6hi5  # set 5 to array count (deref r6)
+  incr6  # increment r6 to get it to point to the array
+  # setup r7 to point to for loop (relative: 6 instructions back)
+  7set0110
+  for_item_in_array:
+    lt6hi4  # load item to r4 (overwrite, lc $r4, $r6)
+    # bubble up item in r1-r4
+    swplt34
+    swplt23
+    swplt12
+    incr6  # increment r6
+    decr5  # decrement r5
+    b5nzj7
+  7set0101  # set r7 to point to value store
+  st37  # load r3 to memory of r7
+  6set0111  # set r6 to array count pointer (7)
+  lt6hi5  # set 5 to array count (deref r6)
+  incr6  # increment r6 to get it to point to the array
+  # setup r7 to point to for loop (relative: 6 instructions back)
+  7set0010
+  for_item_in_array2:
+    lt6hi4  # load item to r4 (overwrite, lc $r4, $r6)
+    incr6
+    b34neqj7
+  8decr6
+  swp36 # swap R3 and R6
+  7set0110  # set r7 to third largest index pointer
+  st37  # store value in r7
+
+f_remainder:
+  # find remainder of A/B
+  zero6  # set r6 to 0
+  neginf $r3  # set r3 to lowest possible
+  lt6hi4  # deref 6, load to r4 (A)
+  swplt34  # (A is now in r3)
+  incr6  # go to next addr (B)
+  lt6hi4  # deref 6, load to r4 (B)
+  7set0011  # set 7 to 3 (for branch)
+  while_a_lte_b:  # if A>B sub B from A, repeat
+    b34ltjf7
+    sub34
+    j2
+  end_while:
+  # store A to remainder in memory
+  # 7set0011 -- already there!
+  st37
+halt

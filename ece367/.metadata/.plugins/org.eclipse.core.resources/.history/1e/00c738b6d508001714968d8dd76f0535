@@ -1,0 +1,34 @@
+/*
+ * main.c
+ *
+ * ECE 367 Lab 7
+ *
+ * Created by Gregory N. Schmit
+ */
+
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include "launchpad.h"
+#include "ranger.h"
+#include "driverlib/interrupt.h"
+
+void lab7exec(void)
+{
+    lpInit();
+    RangerInit();
+    uint32_t lag;
+    uprintf("Lab 7\n\r");
+    while (1) {
+        waitMs(1000);
+        lag = RangerLag();
+        uprintf("%lu\r\n\r\n", lag);
+        if (0) { break; }
+    }
+    return;
+}
+
+int main() {
+	lab7exec();
+	return 0;
+}

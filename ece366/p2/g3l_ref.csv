@@ -1,0 +1,25 @@
+Instruction,Argument,Description,Encoding (5-bit),Section,Write to Reg?,Read from Reg?,Out1 or Out2,Out1-S,Out2-S,Immediate?,Arithmetic?,Memory?
+6set0000,,Set $r6 to 0b000000000000,0b11000,11xxx - Setting + Halt,y - r6,,,,,y,,
+6set0111,,Set $r6 to 0b000000000111,0b11001,11xxx - Setting + Halt,y - r6,,,,,y,,
+7set0110,,Set $r7 to 0b000000000110,0b11010,11xxx - Setting + Halt,y - r7,,,,,y,,
+7set0101,,Set $r7 to 0b000000000101,0b11011,11xxx - Setting + Halt,y - r7,,,,,y,,
+7set0011,,Set $r7 to 0b000000000011,0b11100,11xxx - Setting + Halt,y - r7,,,,,y,,
+7set0010,,Set $r7 to 0b000000000010,0b11101,11xxx - Setting + Halt,y - r7,,,,,y,,
+7set0001,,Set $r7 to 0b000000000001,0b11110,11xxx - Setting + Halt,y - r7,,,,,y,,
+halt,,Halt,0b11111,11xxx - Setting + Halt,,,,,,,,
+neginf,$rlox,Set low register ($rlox is element of $r0-$r3) to lowest number,0b000xx,000xx - Special Set to Negative Infinity,y - r0-3,,,,,y,,
+incr6,,Increment $r6,0b00100,0010x - Incrementing,y - r6,y - r6,out1,,,,y,
+decr5,,Decrement $r5,0b00101,0010x - Incrementing,y - r5,y - r5,out1,,,,y,
+8decr6,,Decrement $r8 by 6,0b00110,00110 - Special Increment,y - r8,y - r8,out1,,,,y,
+lt6hi4,,Load tribble pointed to by $r6 to $r4,0b01000,0100x - Load from Memory,y - r4,y - r6,out1,,,,,y
+lt6hi5,,Load tribble pointed to by $r6 to $r5,0b01001,0100x - Load from Memory,y - r5,y - r6,out1,,,,,y
+st37,,Store $r3 to memory pointed to by $r7,0b01010,01010 - Special Store to Memory,,y - r7,out1,,,,,y
+swplt12,,Swap $r1 and $r2 if $r1<$r2,0b10000,100xx - Register Swap,y - r1r2,y - r1r2,both,,,,y,
+swplt23,,Swap $r2 and $r3 if $r2<$r3,0b10001,100xx - Register Swap,y - r2r3,y - r2r3,both,,,,y,
+swplt34,,Swap $r3 and $r4 if $r3<$r4,0b10010,100xx - Register Swap,y - r3r4,y - r3r4,both,,,,y,
+swp36,,Swap $r3 and $r6,0b10011,100xx - Register Swap,y - r3r6,,,,,,,
+sub37,,"Subtract $r4 from $r3, store in $r3",0b10100,10100 - Special Subtract,y - r3,y - r3r4,both,,,,y,
+b5nzj7,,Branch if $r5 != 0 to PC-$r7,0b01100,011xx - Branching,,y - r5,out1,,,,y,
+b34neqj7,,Branch if $r3 != $r7 to PC-$r7,0b01101,011xx - Branching,,y - r3r7,both,,,,y,
+b34ltejf7,,Branch if $r3 < $r4 to PC+$r7,0b01110,011xx - Branching,,y - r3r4,both,,,,y,
+j2,,Jump two instructions backwards (PC-2),0b01111,011xx - Branching,,,,,,,y,

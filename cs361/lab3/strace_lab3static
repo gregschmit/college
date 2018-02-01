@@ -1,0 +1,64 @@
+execve("./lab3static", ["./lab3static"], [/* 22 vars */]) = 0
+uname({sys="Linux", node="systems", ...}) = 0
+brk(0)                                  = 0x1f15000
+brk(0x1f161c0)                          = 0x1f161c0
+arch_prctl(ARCH_SET_FS, 0x1f15880)      = 0
+readlink("/proc/self/exe", "/nfsdirs/home1/class/temp150/lab"..., 4096) = 44
+brk(0x1f371c0)                          = 0x1f371c0
+brk(0x1f38000)                          = 0x1f38000
+access("/etc/ld.so.nohwcap", F_OK)      = -1 ENOENT (No such file or directory)
+rt_sigaction(SIGINT, {0x400f8e, [INT], SA_RESTORER|SA_RESTART, 0x4061d0}, {SIG_DFL, [], 0}, 8) = 0
+clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x1f15b50) = 1505
+fstat(1, {st_mode=S_IFREG|0644, st_size=732, ...}) = 0
+mmap(NULL, 262144, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f948954d000
+clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x1f15b50) = 1506
+clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x1f15b50) = 1507
+clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x1f15b50) = 1508
+clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x1f15b50) = 1509
+kill(1505, SIGINT)                      = 0
+kill(1506, SIGINT)                      = 0
+kill(1507, SIGINT)                      = 0
+kill(1508, SIGINTProcess 1505 received signal 2
+)                      = 0
+kill(1509, SIGINT)                      = 0
+wait4(-1, Created process 1505
+Process 1506 received signal 2
+Created process 1505
+Created process 1506
+Process 1507 received signal 2
+[{WIFEXITED(s) && WEXITSTATUS(s) == 2}], 0, NULL) = 1505
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1505, si_uid=6150, si_status=2, si_utime=0, si_stime=0} ---
+wait4(-1, Created process 1505
+Created process 1506
+Created process 1507
+Process 1508 received signal 2
+Created process 1505
+Created process 1506
+Created process 1507
+Created process 1508
+Process 1509 received signal 2
+[{WIFEXITED(s) && WEXITSTATUS(s) == 2}], 0, NULL) = 1507
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1507, si_uid=6150, si_status=2, si_utime=0, si_stime=0} ---
+wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) == 2}], 0, NULL) = 1506
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1509, si_uid=6150, si_status=2, si_utime=0, si_stime=0} ---
+wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) == 2}], 0, NULL) = 1508
+--- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=1508, si_uid=6150, si_status=2, si_utime=0, si_stime=0} ---
+wait4(-1, [{WIFEXITED(s) && WEXITSTATUS(s) == 2}], 0, NULL) = 1509
+write(1, "Created process 1505\nCreated pro"..., 415Created process 1505
+Created process 1506
+Created process 1507
+Created process 1508
+Created process 1509
+Killing process 1505
+Killing process 1506
+Killing process 1507
+Killing process 1508
+Killing process 1509
+Child 1505 terminated with exit status 2
+Child 1507 terminated with exit status 2
+Child 1506 terminated with exit status 2
+Child 1508 terminated with exit status 2
+Child 1509 terminated with exit status 2
+) = 415
+exit_group(0)                           = ?
++++ exited with 0 +++

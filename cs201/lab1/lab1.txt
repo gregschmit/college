@@ -1,0 +1,20 @@
+Question 1, what gets printed here?
+gns: Undefined output due to you are beyond the scope of the last array
+
+Question 2, what gets printed here?
+gns: Prints the address of secondArray in Hexadecimal
+
+Question 3, what gets printed here?
+gns: Prints 112
+
+Question 4, what gets printed here?
+gns: Prints the address of secondArray[2] in Hexadecimal
+
+Question 5, what does this code do?
+gns: The printf statement prints a null character (nothing). Then it generates a range of memory 25 bytes long and returns the first byte's address and stores it into myCharPtr.
+
+Question 6, what gets printed here?
+gns: "testing for our in class demo we n" (strncpy stops at 34)
+
+Question 7, how/why is what gets printed here different than what gets printed in Question 6?
+gns: The string will terminate at this null character, and printf will not print any further.
