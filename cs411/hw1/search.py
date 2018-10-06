@@ -4,7 +4,7 @@
 # educational purposes provided that (1) you do not distribute or publish
 # solutions, (2) you retain this notice, and (3) you provide clear
 # attribution to UC Berkeley, including a link to http://ai.berkeley.edu.
-# 
+#
 # Attribution Information: The Pacman AI projects were developed at UC Berkeley.
 # The core projects and autograders were primarily created by John DeNero
 # (denero@cs.berkeley.edu) and Dan Klein (klein@cs.berkeley.edu).
@@ -129,8 +129,10 @@ def breadthFirstSearch(problem):
     "*** YOUR CODE HERE ***"
     state = problem.getStartState()
     visited = []
+    discovered = []
     queue = util.Queue()
-    queue.push(((state, ''), None))
+    queue.push(((state, ''), None)) # ((state, direction), parent)
+    discovered.append(((state, ''), None));
     cur = None
     while queue.list:
         # pop item off queue
@@ -142,20 +144,25 @@ def breadthFirstSearch(problem):
         # add successors to queue unless we already visited them
         nexts = problem.getSuccessors(cur[0][0])
         for x in nexts:
-            if not any(x[0] == y[0][0] for y in visited+queue.list):
+            if not any(x[0] == y[0][0] for y in visited+discovered):
                 queue.push((x, cur[0][0]))
-                #visited.append((x, cur[0][0]))
+                discovered.append((x, cur[0][0]))
     return backtrack(cur, visited)
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     "*** YOUR CODE HERE ***"
+    #print "Start:", problem.getStartState()
+    #print "Is the start a goal?", problem.isGoalState(problem.getStartState())
+    #print "Start's successors:", problem.getSuccessors(problem.getStartState())
     state = problem.getStartState()
     visited = []
+    discovered = []
     queue = util.PriorityQueue()
-    queue.push(((state, ''), None), 0)
+    queue.push(((state, ''), None, [], 0), 0) # (state, direction), parent, actions, cost
+    discovered.append(((state, ''), None, [], 0))
     cur = None
-    while queue.list:
+    while queue.heap:
         # pop item off queue
         cur = queue.pop()
         visited.append(cur)
@@ -165,10 +172,12 @@ def uniformCostSearch(problem):
         # add successors to queue unless we already visited them
         nexts = problem.getSuccessors(cur[0][0])
         for x in nexts:
-            if not any(x[0] == y[0][0] for y in visited+queue.list):
-                queue.push((x, cur[0][0]))
-                #visited.append((x, cur[0][0]))
-    return backtrack(cur, visited)
+            if not any(x[0] == y[0][0] for y in visited+discovered):
+                dirs = cur[2] + [x[1]]
+                cost = problem.getCostOfActions(dirs)
+                queue.push((x, cur[0][0], dirs, cur[3] + cost), cur[3] + cost)
+                discovered.append((x, cur[0][0], dirs, cur[3] + cost))
+    return cur[2]
 
 def nullHeuristic(state, problem=None):
     """
