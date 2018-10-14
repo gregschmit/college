@@ -13,7 +13,7 @@ def gradeP1():
     answer = [4, 3, 1, 2, 1, 2, 3, 4, 3, 4, 2, 1, 2, 1, 4, 3]
     for i in range(16):
         if result[i] != answer[i]:
-            score = 0            
+            score = 0
 
     if score == 0:
         print "Your Answer:\n" + str(np.reshape(result,(4,4)))
@@ -24,7 +24,7 @@ def gradeP1():
     print "#######################################"
 
     return score
-    
+
 ##### P2
 
 def gradeP2():
@@ -32,11 +32,11 @@ def gradeP2():
     result = hw2.annealTSP(['New York City', 'Los Angeles', 'Chicago', 'Houston'])
     print "\n"
     if result[1] > 93.0:
-        score = 0            
+        score = 0
 
     if score == 0:
         print "Your Distance: " + str(result[1])
-        print "Correct Distance: 92.5725570752" 
+        print "Correct Distance: 92.5725570752"
 
     print "#######################################"
     print "P2 SCORE: " + str(score) + " / 3 "
@@ -57,7 +57,7 @@ def gradeP3():
             if result[i] != answer[i]:
                 correct_runs = correct_runs - 1
                 bad_run = True
-        if bad_run:    
+        if bad_run:
             print "Your Answer:\n" + str(np.reshape(result,(4,4)))
             print "Correct Answer:\n" + str(np.reshape(answer,(4,4)))
 
@@ -111,7 +111,7 @@ def gradeP5():
     answer = [4, 3, 1, 2, 1, 2, 3, 4, 3, 4, 2, 1, 2, 1, 4, 3]
     for i in range(16):
         if result[i] != answer[i]:
-            score = 0            
+            score = 0
 
     if score == 0:
         print "Your Answer:\n" + str(np.reshape(result,(4,4)))
@@ -154,20 +154,17 @@ def gradeP6():
 
     result = hw2.calculateMMSAllocation(2,5,((1,2,3,4,5),(10,9,8,7,6)),(7,19))
     if result is not None:
-        result = np.reshape(result,10)
-        answer = [0, 0, 0, 1, 1, 1, 1, 1, 0, 0]
-        bad_answer = False
-        for i in range(10):
-            if abs(result[i] - answer[i]) > 0.01:
-                bad_answer = True
-        if bad_answer:
+        val1 = 1*result[0][0] +  2*result[0][1] +  3*result[0][2] +  4*result[0][3] +  5*result[0][4]
+        val2 = 10*result[1][0] +  9*result[1][1] +  8*result[1][2] +  7*result[1][3] +  6*result[1][4]
+        if val1 < 6.99 or val2 < 18.99:
             score = score - 3
             print "MMS Allocation:"
             print "Note that small deviations from 1 or 0 due to numerics are note the issue"
             print "Your Answer:\n" + str(np.reshape(result,(2,5)))
-            print "Correct Answer:\n" + str(np.reshape(answer,(2,5)))
+            print "Player 1 should get at least 7 and got: " + str(val1)
+            print "Player 2 should get at least 19 and got: " + str(val2)
     else:
-        print "MMS Allocation: Result was None"
+        print "MMS Allocation: Result was None (no feasible solution?)"
         score = score - 3
 
     print "#######################################"

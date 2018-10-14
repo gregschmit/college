@@ -119,7 +119,7 @@ def sudokuCSP(positions,psize):
     cstAdd(sudokuPro, sudoKuGrid, domains,psize)
     return sudokuPro.getSolution()
 
-############################## PROBLEM 2 ######################################    
+############################## PROBLEM 2 ######################################
 
 class TravellingSalesmanProblem(Annealer):
 
@@ -193,12 +193,12 @@ def annealTSP(initial_state):
 class SudokuProblem(Annealer):
 
     """ positions: list of (row,column,value) triples representing the already filled in cells"""
-    """ psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """ 
+    """ psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """
     def __init__(self,initial_state,positions,psize):
         self.psize = psize
         self.positions = positions
         super(SudokuProblem, self).__init__(initial_state)
-   
+
     """ make a local change to the solution"""
     """ current state is available as self.state """
     def move(self):
@@ -216,7 +216,7 @@ class SudokuProblem(Annealer):
         #-----------------------
         # Your code
         e = 0.0
- 
+
         return e
         #-----------------------
 
@@ -230,7 +230,7 @@ def annealSudoku(positions, psize):
         sudoku.Tmin = 1.0
         return sudoku.anneal()
 
-############################## PROBLEM 4 ######################################    
+############################## PROBLEM 4 ######################################
 
 def packingProblem(c):
     # --------------------
@@ -249,7 +249,7 @@ def coveringProblem(c):
 
 """ A helper function to visualize ouput.  You do not need to change this """
 """ binary: the output of your solver """
-""" psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """ 
+""" psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """
 def sudokuIPToGrid(binary,psize):
     dim = psize**2
     x = np.zeros((dim,dim),dtype=int)
@@ -262,7 +262,7 @@ def sudokuIPToGrid(binary,psize):
 
 """ Implementation for a IP Sudoku Solver """
 """ positions: list of (row,column,value) triples representing the already filled in cells"""
-""" psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """ 
+""" psize: the problem size (e.g. 3 for a 3x3 grid of 3x3 squares in a standard Sudoku) """
 def sudokuIP(positions,psize):
     # --------------------
     # Your code
@@ -306,7 +306,7 @@ def calculateMMSValue(n,m,v,i):
     # Your code
     A = cp.Variable((n,m),integer=True)
     d = cp.Variable()
-    
+
     return d.value
     # --------------------
 
