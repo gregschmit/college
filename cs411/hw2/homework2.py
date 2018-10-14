@@ -79,10 +79,27 @@ def addVar(problem, grid, domains, init):
                 problem.addVariable(grid[rowIdx,colIdx], domains)
 
 
-def cstAdd(problem, grid, domains,psize):
+def unique(*x):
+    y = []
+    return not any(e in y or y.append(e) for e in x)
+
+def cstAdd(problem, grid, domains, psize):
     # --------------------
     # Your code
-    pass
+    n_rows = grid.shape[0]
+    n_cols = grid.shape[1]
+    g_r = []
+    g_c = [[] for i in range(n_cols)]
+    g_b = [[] for i in range(psize*psize)]
+    # iter rows/boxes
+    for r_i, r in enumerate(grid):
+        g_r.append(r)
+        for c_i, value in enumerate(r):
+            g_c[c_i].append(value)
+            g_b[c_i//2 + (r_i//2 * psize)].append(value)
+    for g in g_r + g_c + g_b:
+        problem.addConstraint(unique, tuple(g))
+
     # --------------------
 
 """ Implementation for a CSP Sudoku Solver """
