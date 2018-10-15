@@ -4,6 +4,7 @@ import random
 from simanneal import Annealer
 import cvxpy as cp
 import numpy as np
+import itertools as iter
 
 ######################### EXAMPLES OF HOW TO USE PACKAGES ####################
 
@@ -77,7 +78,6 @@ def addVar(problem, grid, domains, init):
                 problem.addVariable(grid[rowIdx,colIdx], [init[grid[rowIdx, colIdx]]])
             else:
                 problem.addVariable(grid[rowIdx,colIdx], domains)
-
 
 def unique(*x):
     y = []
@@ -154,7 +154,16 @@ class TravellingSalesmanProblem(Annealer):
         """Calculates distance between two latitude-longitude coordinates."""
         # -----------------------------
         # Your code
-        return 0.0
+        # maybe this is bad? return math.sqrt(((a[0] - b[0]) ** 2) + ((a[1] - b[1]) ** 2))
+        # so do haversine:
+        lat1 = a[0]
+        long1 = a[1]
+        lat2 = b[0]
+        long2 = b[1]
+        dlong = long2 - long1
+        dlat = lat2 - lat1
+        x = np.sin(dlat/2.0)**2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlong/2.0)**2
+        return 2 * np.arcsin(np.sqrt(x))
         # -----------------------------
 
 
@@ -165,8 +174,12 @@ class TravellingSalesmanProblem(Annealer):
     def move(self):
 
         # --------------------
-        # Your code
-        pass
+        l = len(self.state)
+        if l > 1:
+            x = random.sample([i for i in range(l)], 2)
+            tmp = self.state[x[0]]
+            self.state[x[0]] = self.state[x[1]]
+            self.state[x[1]] = tmp
         # -------------------------
 
 
@@ -177,9 +190,12 @@ class TravellingSalesmanProblem(Annealer):
     def energy(self):
         #-----------------------
         # Your code
-        e = 100.0
-
-        return e
+        accum = 0
+        o = self.state[0]
+        for s in self.state[1:]:
+            accum += self.distance(self.cities[o], self.cities[s])
+            o = s
+        return accum
         #-----------------------
 
 # Execution part, please don't change it!!!
@@ -197,6 +213,23 @@ class SudokuProblem(Annealer):
     def __init__(self,initial_state,positions,psize):
         self.psize = psize
         self.positions = positions
+
+        # calculate rows, cols, boxes now
+        self.g_r = [[e for e in range(i, i+self.psize**2)] for i in [r*self.psize**2 for r in range(self.psize**2)]]
+        self.g_c = [[i + e*self.psize**2 for e in range(self.psize**2)] for i in [r for r in range(self.psize**2)]]
+        self.g_b = []
+        for maj_r in range(self.psize):
+            for maj_c in range(self.psize):
+                pieces = []
+                for min_r in range(self.psize):
+                    pieces.extend([e + maj_c*(self.psize) + maj_r*(self.psize ** 3) + min_r*(self.psize ** 2) for e in range(self.psize)])
+                self.g_b.append(pieces)
+
+        self.empty = [i for i in range(self.psize**4)]
+        for p in positions:
+            self.empty.remove(p[0]*self.psize**2 + p[1])
+            initial_state[p[0]*self.psize**2 + p[1]] = p[2]
+
         super(SudokuProblem, self).__init__(initial_state)
 
     """ make a local change to the solution"""
@@ -205,8 +238,21 @@ class SudokuProblem(Annealer):
 
         # --------------------
         # Your code
-        pass
+        # change random spot that isn't taken
+        spot = random.choice(self.empty)
+        spot_value = self.state[spot]
+        while self.state[spot] == spot_value:
+            self.state[spot] = random.randint(1, self.psize ** self.psize)
         # -------------------------
+
+
+    def num_not_unique(self, *x):
+        y = []
+        c = 0
+        for e in x:
+            if e in y: c += 1
+            y.append(e)
+        return c
 
 
     """ how good is this state? """
@@ -215,9 +261,12 @@ class SudokuProblem(Annealer):
     def energy(self):
         #-----------------------
         # Your code
-        e = 0.0
-
-        return e
+        # maybe return the number of non-unique instances... good measure for goodness of a sudoku state
+        nonuniques = 0
+        for s in self.g_r + self.g_c + self.g_b:
+            x = self.num_not_unique(*tuple(self.state[x] for x in s))
+            nonuniques += x
+        return nonuniques
         #-----------------------
 
 # Execution part, please don't change it!!!
@@ -235,14 +284,33 @@ def annealSudoku(positions, psize):
 def packingProblem(c):
     # --------------------
     # Your code
-
-    return 0.0
+    x1 = cp.Variable()
+    x2 = cp.Variable()
+    x3 = cp.Variable()
+    obj = cp.Maximize((2.0/5.0)*x1+x2+x3)
+    constraints = [
+        x1>=0, x2>=0, x3>=0, x1<=5, x2<=3, x3<=1, (x1 + x2 + x3)<=c
+    ]
+    # print constraints
+    # exit(0)
+    problem = cp.Problem(obj, constraints)
+    s = problem.solve()
+    return s
 
 def coveringProblem(c):
     # --------------------
     # Your code
-
-    return 0.0
+    y1 = cp.Variable()
+    y2 = cp.Variable()
+    y3 = cp.Variable()
+    y4 = cp.Variable()
+    obj = cp.Minimize(y1+y2+y3+(c*y4))
+    constraints = [
+        y1>=0, y2>=0, y3>=0, y4>=0, y1 + 5*y4 >= 2, y2 + 3*y4 >= 3, y3 + y4 >= 1
+    ]
+    problem = cp.Problem(obj, constraints)
+    s = problem.solve()
+    return s
     # --------------------
 
 ############################## PROBLEM 5 ######################################
@@ -269,8 +337,38 @@ def sudokuIP(positions,psize):
     dim = psize**2
     M = cp.Variable((dim**2,dim),integer=True) #Sadly we cannot do 3D Variables
 
+    # calculate groups
+    g_r = [[e for e in range(i, i+psize**2)] for i in [r*psize**2 for r in range(psize**2)]]
+    g_c = [[i + e*psize**2 for e in range(psize**2)] for i in [r for r in range(psize**2)]]
+    g_b = []
+    for maj_r in range(psize):
+        for maj_c in range(psize):
+            pieces = []
+            for min_r in range(psize):
+                pieces.extend([e + maj_c*(psize) + maj_r*(psize ** 3) + min_r*(psize ** 2) for e in range(psize)])
+            g_b.append(pieces)
+
     constraints = []
     #ADD YOUR CONSTRAINTS HERE
+    # constraints for init values:
+    for p in positions:
+        spot = p[0]*psize**2 + p[1]
+        constraints.append(M[spot][p[2]-1] == 1)
+
+    for i in range(psize**4):
+        constraints.append(M[i] >= 0)
+        constraints.append(M[i] <= dim-1)
+        constraints.append(sum([M[i][x] for x in range(dim)]) == 1)
+
+    for block in g_r + g_c + g_b:
+        # b is the block that needs to be unique
+        for layer in range(dim):
+            c = sum([M[i][layer] for i in block]) == 1
+            constraints.append(c)
+    # print constraints
+    # print psize
+    # print positions
+    # print M[0]
 
     # Form objective.
     obj = cp.Minimize(M[0][0])
