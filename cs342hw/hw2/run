@@ -1,0 +1,4 @@
+#!/bin/bash
+make clean
+make build
+java -cp bin:lib/argparse4j-0.7.0.jar Main $@

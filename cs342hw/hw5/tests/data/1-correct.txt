@@ -1,0 +1,6 @@
+This particular computer was one of the 15 nodes on ARPANET, the computer network that would become the Internet.
+Hart believed that computers would one day be accessible to the general public and decided to make works of literature available in electronic form for free.
+He used a copy of the United States Declaration of Independence in his backpack, and this became the first Project Gutenberg "e-text".
+He named the project after Johannes Gutenberg, the fifteenth century German printer who propelled the movable type printing press revolution.
+Starting in 2004, an improved online catalog made Project Gutenberg content easier to browse, access and hyperlink.
+Project Gutenberg is now hosted by ibiblio at the University of North Carolina at Chapel Hill.
