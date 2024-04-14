@@ -24,14 +24,9 @@ public class Percolation {
         this.grid = new boolean[n * n + 2];
         this.ufGrid = new WeightedQuickUnionUF(n * n + 2);
 
-        // Connect the top and bottom rows to the virtual top and bottom sites,
-        // respectively.
+        // Set the virtual top and bottom sites to open.
         this.grid[this.top] = true;
         this.grid[this.bottom] = true;
-        for (int i = 0; i < n; i++) {
-            this.ufGrid.union(i + 1, this.top);
-            this.ufGrid.union(n * n - n + 1 + i, this.bottom);
-        }
     }
 
     // Opens the site (row, col) if it is not open already.
@@ -53,6 +48,16 @@ public class Percolation {
                 this.ufGrid.union(index, neighbor);
             }
         }
+
+        // If the site is in the top row, connect it to the virtual top site.
+        if (row == 1) {
+            this.ufGrid.union(index, this.top);
+        }
+
+        // If the site is in the bottom row, connect it to the virtual bottom site.
+        if (row == this.n) {
+            this.ufGrid.union(index, this.bottom);
+        }
     }
 
     // Is the site (row, col) open?
@@ -67,7 +72,7 @@ public class Percolation {
         return this.isConnected(this.getIndex(row, col), this.top);
     }
 
-    // returns the number of open sites
+    // Returns the number of open sites.
     public int numberOfOpenSites() {
         return this.openCount;
     }
@@ -78,14 +83,10 @@ public class Percolation {
     }
 
     public static void main(String[] args) {
-        Percolation p = new Percolation(5);
+        Percolation p = new Percolation(1);
         p.printGrid();
         System.out.println("Percolates: " + p.percolates());
         p.open(1, 1);
-        p.open(2, 1);
-        p.open(3, 1);
-        p.open(4, 1);
-        p.open(5, 1);
         p.printGrid();
         System.out.println("Percolates: " + p.percolates());
     }
