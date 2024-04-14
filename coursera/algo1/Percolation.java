@@ -7,6 +7,7 @@ public class Percolation {
     private int openCount;
     private boolean[] grid;
     private WeightedQuickUnionUF ufGrid;
+    private WeightedQuickUnionUF noBackwashUfGrid;
 
     // Creates n-by-n grid, with all sites initially blocked.
     public Percolation(int n) {
@@ -24,6 +25,11 @@ public class Percolation {
         this.grid = new boolean[n * n + 2];
         this.ufGrid = new WeightedQuickUnionUF(n * n + 2);
 
+        // The `noBackwashUfGrid` is used to prevent backwash. It is the same as
+        // `ufGrid`
+        // but without the bottom virtual site.
+        this.noBackwashUfGrid = new WeightedQuickUnionUF(n * n + 1);
+
         // Set the virtual top and bottom sites to open.
         this.grid[this.top] = true;
         this.grid[this.bottom] = true;
@@ -34,7 +40,7 @@ public class Percolation {
         this.checkRowAndCol(row, col);
         int index = this.getIndex(row, col);
 
-        if (this.grid[index] == true) {
+        if (this.grid[index]) {
             return;
         }
 
@@ -43,15 +49,20 @@ public class Percolation {
 
         // Connect the site to its open neighbors.
         int[] neighbors = this.getNeighbors(row, col);
+        // Not a performance bug.
+        // CHECKSTYLE:OFF
         for (int neighbor : neighbors) {
             if (neighbor != 0 && this.grid[neighbor]) {
                 this.ufGrid.union(index, neighbor);
+                this.noBackwashUfGrid.union(index, neighbor);
             }
         }
+        // CHECKSTYLE:ON
 
         // If the site is in the top row, connect it to the virtual top site.
         if (row == 1) {
             this.ufGrid.union(index, this.top);
+            this.noBackwashUfGrid.union(index, this.top);
         }
 
         // If the site is in the bottom row, connect it to the virtual bottom site.
@@ -92,10 +103,17 @@ public class Percolation {
     }
 
     private boolean isConnected(int p, int q) {
-        if (this.grid[p] == false || this.grid[q] == false) {
+        if (!this.grid[p] || !this.grid[q]) {
             return false;
         }
-        return this.ufGrid.find(p) == this.ufGrid.find(q);
+
+        // Must use normal `ufGrid` for the bottom virtual site.
+        if (p == this.bottom || q == this.bottom) {
+            return this.ufGrid.find(p) == this.ufGrid.find(q);
+        }
+
+        // Otherwise, use `noBackwashUfGrid` to prevent backwash.
+        return this.noBackwashUfGrid.find(p) == this.noBackwashUfGrid.find(q);
     }
 
     private int getIndex(int row, int col) {
@@ -105,7 +123,10 @@ public class Percolation {
     // Return an array of 4 possible neighbors. If the provided row/col doesn't have
     // a neighbor then the value will be 0.
     private int[] getNeighbors(int row, int col) {
+        // Numeric literal is fine.
+        // CHECKSTYLE:OFF
         int[] neighbors = new int[4];
+        // CHECKSTYLE:ON
         int index = this.getIndex(row, col);
 
         // Above

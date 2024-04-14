@@ -2,13 +2,18 @@ import edu.princeton.cs.algs4.StdRandom;
 import edu.princeton.cs.algs4.StdStats;
 
 public class PercolationStats {
+    private static final double CONFIDENCE_95 = 1.96;
+
     private int n;
     private int trials;
     private int[] percolatedAt;
+
+    // Attempt to disable checkstyle for using `Double` instead of `double` because
+    // I'm using `null` to check if the value has been calculated yet.
+    // CHECKSTYLE:OFF
     private Double mean;
     private Double stddev;
-
-    private static final double CONFIDENCE_95 = 1.96;
+    // CHECKSTYLE:ON
 
     // Perform independent trials on an n-by-n grid.
     public PercolationStats(int n, int trials) {
