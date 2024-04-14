@@ -1,5 +1,3 @@
-import java.util.Arrays;
-
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
