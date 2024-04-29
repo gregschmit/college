@@ -8,6 +8,21 @@ public class FastCollinearPoints {
     private int numberOfSegments;
     private LineSegment[] segments;
 
+    // Helper tuple to store a slope and a point.
+    private class SlopePoint implements Comparable<SlopePoint> {
+        public final double slope;
+        public final Point point;
+
+        public SlopePoint(double slope, Point point) {
+            this.slope = slope;
+            this.point = point;
+        }
+
+        public int compareTo(SlopePoint that) {
+            return Double.compare(this.slope, that.slope);
+        }
+    }
+
     // Finds all line segments containing 4 or more points.
     public FastCollinearPoints(Point[] points) {
         if (points == null) {
@@ -29,7 +44,7 @@ public class FastCollinearPoints {
         }
 
         this.numberOfSegments = 0;
-        this.segments = new LineSegment[n];
+        this.segments = new LineSegment[n * n];
 
         // Think of p as the origin.
         // For each other point q > p, determine the slope it makes with p.
@@ -39,17 +54,28 @@ public class FastCollinearPoints {
         // collinear.
         for (int i = 0; i < n - 3; i++) {
             Point p = points[i];
-            Point[] pointsSorted = Arrays.copyOfRange(points, i + 1, n);
-            Arrays.sort(pointsSorted, p.slopeOrder());
+            SlopePoint[] slopePoints = new SlopePoint[n - i - 1];
+            for (int j = i + 1; j < n; j++) {
+                slopePoints[j - i - 1] = new SlopePoint(p.slopeTo(points[j]), points[j]);
+            }
+            Arrays.sort(slopePoints);
 
             int count = 1;
-            for (int j = 1; j < pointsSorted.length; j++) {
-                if (j == pointsSorted.length - 1 || p.slopeTo(pointsSorted[j]) != p.slopeTo(pointsSorted[j + 1])) {
+            for (int j = 1; j < slopePoints.length; j++) {
+                double previousSlope = slopePoints[j - 1].slope;
+                double slope = slopePoints[j].slope;
+
+                if (slope == previousSlope) {
+                    // If this point has the same slope as the previous, just increment the count.
+                    count++;
+                } else {
+                    // If the count is greater than or equal to 3, we have found the end of a line
+                    // segment of length 3 or more.
                     if (count >= 3) {
                         Point[] collinearPoints = new Point[count + 1];
                         collinearPoints[0] = p;
                         for (int k = 1; k <= count; k++) {
-                            collinearPoints[k] = pointsSorted[j - k + 1];
+                            collinearPoints[k] = slopePoints[j - k].point;
                         }
 
                         Arrays.sort(collinearPoints);
@@ -58,9 +84,8 @@ public class FastCollinearPoints {
                                     collinearPoints[count]);
                         }
                     }
+
                     count = 1;
-                } else {
-                    count++;
                 }
             }
         }
